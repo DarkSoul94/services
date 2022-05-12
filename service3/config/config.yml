@@ -1,0 +1,19 @@
+app:
+  release: false
+  name: "service1"
+  http_port: 8888
+  log:
+    dir: "logs"
+    file: "app.log"
+  db:
+    login: ""
+    pass: ""
+    host: ""
+    port: 
+    name: ""
+    args: "parseTime=true&multiStatements=true"
+  rabbit:
+    login: "guest"
+    pass: "guest"
+    host: "localhost"
+    port: 5672
