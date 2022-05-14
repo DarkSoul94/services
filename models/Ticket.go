@@ -6,3 +6,10 @@ type Ticket struct {
 	UserID string
 	Result bool
 }
+
+//Ticket status
+const (
+	Accept int = iota
+	Processing
+	Complete
+)

@@ -12,11 +12,13 @@ import (
 
 type usecase struct {
 	qCli queueclient.QueueClient
+	repo app.Repository
 }
 
-func NewUsecase(cli queueclient.QueueClient) app.Usecase {
+func NewUsecase(cli queueclient.QueueClient, r app.Repository) app.Usecase {
 	return &usecase{
 		qCli: cli,
+		repo: r,
 	}
 }
 

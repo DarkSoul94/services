@@ -8,8 +8,8 @@ app:
   db:
     login: ""
     pass: ""
-    host: ""
-    port: 
+    host: "localhost"
+    port: 27017
     name: ""
     args: "parseTime=true&multiStatements=true"
   rabbit:

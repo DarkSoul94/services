@@ -12,6 +12,19 @@ services:
     networks:
       - services
 
+  mongodb:
+    image: mongo:5.0
+    container_name: services_mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongo:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=citizix
+      - MONGO_INITDB_ROOT_PASSWORD=S3cret
+    networks:
+      - services
+
 networks:
   services:
     driver: bridge
