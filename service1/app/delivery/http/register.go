@@ -11,4 +11,6 @@ func RegisterHTTPEndpoints(router *gin.RouterGroup, uc app.Usecase) {
 
 	router.POST("/ticket", h.NewTicket)
 	router.GET("/ticket", h.TicketList)
+
+	router.POST("/signup", h.SignUp)
 }

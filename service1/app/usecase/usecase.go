@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"context"
 	"encoding/json"
+	"errors"
 
 	"github.com/DarkSoul94/services"
 	"github.com/DarkSoul94/services/models"
@@ -20,6 +22,21 @@ func NewUsecase(cli queueclient.QueueClient, r app.Repository) app.Usecase {
 		qCli: cli,
 		repo: r,
 	}
+}
+
+func (u *usecase) Registration(ctx context.Context, user models.User) (string, error) {
+	if u.repo.CheckEmailExist(ctx, user.Email) {
+		return "", errors.New("User with this email already exist")
+	}
+
+	user.ID = uuid.New()
+
+	err := u.repo.CreateUser(ctx, user)
+	if err != nil {
+		return "", err
+	}
+
+	return user.ID.String(), nil
 }
 
 func (u *usecase) AcceptNewTicket(newTicket models.Ticket) (string, error) {

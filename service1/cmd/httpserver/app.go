@@ -11,8 +11,8 @@ import (
 	"github.com/DarkSoul94/services/pkg/QueueClient/rabbitmq"
 	"github.com/DarkSoul94/services/service1/app"
 	apphttp "github.com/DarkSoul94/services/service1/app/delivery/http"
-	appusecase "github.com/DarkSoul94/services/service1/app/usecase"
 	apprepo "github.com/DarkSoul94/services/service1/app/repo/mongo"
+	appusecase "github.com/DarkSoul94/services/service1/app/usecase"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/streadway/amqp"
@@ -41,7 +41,11 @@ func NewApp() *App {
 
 	publisher := rabbitmq.NewRabbitClient(chn)
 
-	db := mongoDbInit()
+	db := mongoDbInit(
+		viper.GetString("app.db.host"),
+		viper.GetInt("app.db.port"),
+	)
+
 	repo := apprepo.NewMongoRepo(db.Database(viper.GetString("app.db.name")))
 
 	uc := appusecase.NewUsecase(publisher, repo)
@@ -96,14 +100,14 @@ func (a *App) Stop() error {
 	return a.httpServer.Shutdown(ctx)
 }
 
-func mongoDbInit() *mongo.Client {
+func mongoDbInit(host string, port int) *mongo.Client {
 	ctx := context.Background()
 
 	clientOptions := options.Client().ApplyURI(
 		fmt.Sprintf(
 			"mongodb://%s:%d/",
-			viper.GetString("app.db.host"),
-			viper.GetInt("app.db.port"),
+			host,
+			port,
 		),
 	)
 	client, err := mongo.Connect(ctx, clientOptions)

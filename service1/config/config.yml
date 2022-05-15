@@ -6,12 +6,9 @@ app:
     dir: "logs"
     file: "app.log"
   db:
-    login: ""
-    pass: ""
     host: "localhost"
     port: 27017
-    name: ""
-    args: "parseTime=true&multiStatements=true"
+    name: "services"
   rabbit:
     login: "guest"
     pass: "guest"
