@@ -1,15 +1,20 @@
 package models
 
+import "github.com/google/uuid"
+
 type Ticket struct {
-	ID     string
-	Email  string
-	UserID string
+	ID     uuid.UUID
+	UserID uuid.UUID
 	Result bool
+	Status TicketStatus
 }
 
-//Ticket status
+type TicketStatus int
+
 const (
-	Accept int = iota
+	Accept TicketStatus = iota
 	Processing
 	Complete
 )
+
+var TicketStatusString = map[TicketStatus]string{0: "Accept", 1: "Processing", 2: "Complete"}

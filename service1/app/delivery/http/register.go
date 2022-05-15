@@ -10,7 +10,9 @@ func RegisterHTTPEndpoints(router *gin.RouterGroup, uc app.Usecase) {
 	h := NewHandler(uc)
 
 	router.POST("/ticket", h.NewTicket)
-	router.GET("/ticket", h.TicketList)
+	//router.GET("/ticket", h.TicketList)
+	router.GET("ticket_list", h.GetTicketList)
 
 	router.POST("/signup", h.SignUp)
+	router.GET("/user_list", h.GetUserList)
 }

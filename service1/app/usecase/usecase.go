@@ -39,9 +39,18 @@ func (u *usecase) Registration(ctx context.Context, user models.User) (string, e
 	return user.ID.String(), nil
 }
 
-func (u *usecase) AcceptNewTicket(newTicket models.Ticket) (string, error) {
-	id := uuid.New().String()
-	newTicket.ID = id
+func (u *usecase) GetUserList(ctx context.Context) ([]models.User, error) {
+	return u.repo.GetUserList(ctx)
+}
+
+func (u *usecase) AcceptNewTicket(ctx context.Context, newTicket models.Ticket) (string, error) {
+	newTicket.ID = uuid.New()
+	newTicket.Status = models.Accept
+
+	err := u.repo.CreateTicket(ctx, newTicket)
+	if err != nil {
+		return "", err
+	}
 
 	data, err := json.Marshal(newTicket)
 	if err != nil {
@@ -53,5 +62,9 @@ func (u *usecase) AcceptNewTicket(newTicket models.Ticket) (string, error) {
 		return "", err
 	}
 
-	return id, nil
+	return newTicket.ID.String(), nil
+}
+
+func (u *usecase) GetTicketList(ctx context.Context, userID string) ([]models.Ticket, error) {
+	return u.repo.GetTicketList(ctx, userID)
 }
