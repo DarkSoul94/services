@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"crypto/rand"
 	"encoding/json"
 	"math/big"
@@ -14,15 +15,17 @@ import (
 
 type usecase struct {
 	qCli queueclient.QueueClient
+	repo app.Repository
 }
 
-func NewUsecase(qCli queueclient.QueueClient) app.Usecase {
+func NewUsecase(qCli queueclient.QueueClient, repo app.Repository) app.Usecase {
 	return &usecase{
 		qCli: qCli,
+		repo: repo,
 	}
 }
 
-func (u *usecase) TickerProcessing(ticket models.Ticket) error {
+func (u *usecase) TickerProcessing(ctx context.Context, ticket models.Ticket) error {
 	time.Sleep(1 * time.Second)
 
 	res, err := rand.Int(rand.Reader, big.NewInt(1))
@@ -31,7 +34,8 @@ func (u *usecase) TickerProcessing(ticket models.Ticket) error {
 	}
 
 	notification := models.Notification{
-		Email: ticket.Email,
+		TicketID:         ticket.ID,
+		NotificationType: models.Email,
 	}
 
 	if res.Int64() == 0 {
@@ -40,6 +44,11 @@ func (u *usecase) TickerProcessing(ticket models.Ticket) error {
 	} else {
 		ticket.Result = true
 		notification.Text = "Congratulations, result for your ticket is positive"
+	}
+
+	err = u.repo.InsertResult(ctx, ticket)
+	if err != nil {
+		return err
 	}
 
 	data, err := json.Marshal(notification)

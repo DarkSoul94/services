@@ -1,6 +1,7 @@
 package rabbit
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/DarkSoul94/services/models"
@@ -25,7 +26,11 @@ func (h *Handler) AcceptTicket(msg amqp.Delivery) {
 	if err != nil {
 		return
 	}
-	h.uc.TickerProcessing(ticket)
+
+	err = h.uc.TickerProcessing(context.Background(), ticket)
+	if err != nil {
+		return
+	}
 
 	msg.Ack(false)
 }

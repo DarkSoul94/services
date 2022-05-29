@@ -5,7 +5,6 @@ import (
 
 	"github.com/DarkSoul94/services/models"
 	"github.com/DarkSoul94/services/service1/app"
-	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -24,25 +23,6 @@ func NewMongoRepo(db *mongo.Database) app.Repository {
 	return &mongoRepo{
 		userCollection:   db.Collection(userCollection),
 		ticketCollection: db.Collection(ticketCollection),
-	}
-}
-
-type dbUser struct {
-	ID    string `bson:"_id"`
-	Email string `bson:"email"`
-}
-
-func (r *mongoRepo) toDbUser(user models.User) dbUser {
-	return dbUser{
-		ID:    user.ID.String(),
-		Email: user.Email,
-	}
-}
-
-func (r *mongoRepo) toModelUser(user dbUser) models.User {
-	return models.User{
-		ID:    uuid.MustParse(user.ID),
-		Email: user.Email,
 	}
 }
 
@@ -89,31 +69,6 @@ func (r *mongoRepo) GetUserList(ctx context.Context) ([]models.User, error) {
 	}
 
 	return mUsers, nil
-}
-
-type dbTicket struct {
-	ID     string `bson:"_id"`
-	UserID string `bson:"user_id"`
-	Result bool   `bson:"result"`
-	Status int    `bson:"status"`
-}
-
-func (r *mongoRepo) toDbTicket(ticket models.Ticket) dbTicket {
-	return dbTicket{
-		ID:     ticket.ID.String(),
-		UserID: ticket.UserID.String(),
-		Result: ticket.Result,
-		Status: int(ticket.Status),
-	}
-}
-
-func (r *mongoRepo) toModelTicket(ticket dbTicket) models.Ticket {
-	return models.Ticket{
-		ID:     uuid.MustParse(ticket.ID),
-		UserID: uuid.MustParse(ticket.UserID),
-		Result: ticket.Result,
-		Status: models.TicketStatus(ticket.Status),
-	}
 }
 
 func (r *mongoRepo) CreateTicket(ctx context.Context, ticket models.Ticket) error {

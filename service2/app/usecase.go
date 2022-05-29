@@ -1,7 +1,11 @@
 package app
 
-import "github.com/DarkSoul94/services/models"
+import (
+	"context"
+
+	"github.com/DarkSoul94/services/models"
+)
 
 type Usecase interface {
-	TickerProcessing(ticket models.Ticket) error
+	TickerProcessing(ctx context.Context, ticket models.Ticket) error
 }
